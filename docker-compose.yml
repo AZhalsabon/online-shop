@@ -1,0 +1,22 @@
+services:
+  web:
+    image: nginx
+    ports:
+      - 85:80
+    volumes:
+      - /home/pk/my_project/my-env2/docker/nginx:/etc/nginx/conf.d
+      - /home/pk/my_project/my-env2/docker/php:/var/www/html
+
+  php-fpm:
+    build: docker/php
+    volumes:
+      - /home/pk/my_project/my-env2/docker/php:/var/www/html
+
+  postgres_db:
+    image: postgres:13
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - 54322:5432
