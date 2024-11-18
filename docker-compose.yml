@@ -4,13 +4,13 @@ services:
     ports:
       - 85:80
     volumes:
-      - /home/pk/my_project/my-env2/docker/nginx:/etc/nginx/conf.d
-      - /home/pk/my_project/my-env2/docker/php:/var/www/html
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - .:/var/www/html
 
   php-fpm:
     build: docker/php
     volumes:
-      - /home/pk/my_project/my-env2/docker/php:/var/www/html
+      - .:/var/www/html
 
   postgres_db:
     image: postgres:13
