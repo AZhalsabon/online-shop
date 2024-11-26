@@ -10,12 +10,12 @@
                         <i class="fa-solid fa-user"></i>
                     </div>
 
-                    <form action="handle_login.php" method="post">
+                    <form action="/login" method="post">
                         <!-- Name Field -->
                         <div class="name">
 
                             <i class="fa-solid fa-user"></i>
-                            <?php if(isset($err['login'])){print_r($err['login']);}?>
+                            <label style="color: red"><?php if(isset($err['login'])){print_r($err['login']);}?></label>>
                             <input type="text" name="login" id="user-name" placeholder="email">
                         </div>
 
@@ -23,7 +23,7 @@
                         <div class="password">
 
                             <i class="fa-solid fa-lock"></i>
-                            <?php if(isset($err['password_login'])){print_r($err['password_login']);}?>
+                            <label style="color: red"><?php if(isset($err['password_login'])){print_r($err['password_login']);}?></label>>
                             <input type="password" name="password_login" id="user-password" placeholder="password">
 
                         </div>
@@ -36,8 +36,7 @@
 
                     <!-- Forget Password and Sign Up Field -->
                     <div class="forget-password-sign-up-container">
-                        <div class="forget-password"><a href="#">Forget Password?</a></div>
-                        <div class="sign-up"><a href="#">Sign Up</a></div>
+                        <div class="sign-up"><a href="/registration">Sign Up</a></div>
                     </div>
 
                 </div>

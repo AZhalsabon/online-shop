@@ -7,39 +7,31 @@
     <title>Simple Reistration Form</title>
 </head>
 <body>
-<form action="/registration" method="post">
+<form action="/add-product" method="POST">
     < class="container">
-        <h1>Sign Up</h1>
-        <p>Please fill in this form to create an account.</p>
-        <?php require_once './handle_registration.php';?>
+    <div>
+        <h1>Добавить товар в корзину.</h1>
+        <?php  if (isset($_SESSION['user_id'])) {print_r("пользователь не авторизован.");}?>
 
-        <label for="email"><b>Username</b></label>
-            <?php if(isset($errors['name'])) {print_r ($errors['name']);}?>
-        <input type="text" name="name" placeholder="Enter Username" required>
+        <label for="product_id"><b>Product_id</b></label>
+            <?php if(isset($errors['product_id'])) {print_r ($errors['product_id']);}?>
+        <input type="text" name="product_id" placeholder="Enter Product_id" required>
 
-        <label for="email"><b>Email</b></label>
-            <?php if(isset($errors['email'])) {print_r ($errors['email']);}?>
-        <input type="text" placeholder="Enter Email" name="email" required>
-
-        <label for="psw"><b>Password</b></label>
-            <?php if(isset($errors['password'])) {print_r ($errors['password']);}?>
-        <input type="password" placeholder="Enter Password" name="password" required>
-
-        <label for="pswr"><b>Password repeat</b></label>
-        <?php if(isset($errors['password_repeat'])) {print_r ($errors['password_repeat']);}?>
-        <input type="password-repeat" placeholder="Enter Password-repeat" name="password_repeat" required>
-
+        <label for="amount"><b>Amount</b></label>
+            <?php if(isset($errors['amount'])) {print_r ($errors['amount']);}?>
+        <input type="text" placeholder="Enter amount" name="amount" required>
 
         <br>
 
         <div class="clearfix">
 
-            <button type="submit" class="btn">Sign Up</button>
+            <button type="submit" class="btn">Добавить в корзину</button>
         </div>
     </div>
+    <a href="/catalog">каталог</a>
+    <a href="/bascet">корзина</a>
 </form>
 
-<a href="/login">Логин</a>
 
 </body>
 </html>

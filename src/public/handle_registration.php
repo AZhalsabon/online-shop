@@ -1,9 +1,5 @@
 <?php
-$name = $_POST['name'];
-$email = $_POST['email'];
-$password = $_POST['password'];
-$password_repeat = $_POST['password_repeat'];
-function ValidateRegistrationForm(array $arrpost)
+function validateRegistrationForm(array $arrpost): array
 {
     $errors = [];
 
@@ -26,9 +22,18 @@ function ValidateRegistrationForm(array $arrpost)
             $errors['email'] = 'почта не должна быть пустой';
         }elseif (strpos($email,'@') === false ) {
             $errors['email'] = 'почта не корректна';
+        }else {
+            $pdo = new PDO('pgsql:host=postgres_db;port=5432;dbname=mydb', 'user', 'pass');
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
+            $stmt->execute(['email' => $email]);
+            $userdata = $stmt->fetch();
+
+            if ($userdata !== false) {
+                $errors['email'] = 'email уже зарегестрирован';
+            }
         }
     } else {
-        $errors['email']='поле почты должно быть заполнено';
+            $errors['password'] = 'поля пароля должно быть заполнено';
     }
 
     if ((isset($arrpost['password'])) ) {
@@ -59,9 +64,13 @@ function ValidateRegistrationForm(array $arrpost)
     return $errors;
 }
 
-$errors = ValidateRegistrationForm($_POST);
+$errors = validateRegistrationForm($_POST);
 
 if (empty($errors)) {
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $password_repeat = $_POST['password_repeat'];
 
     $pdo = new PDO('pgsql:host=postgres_db;port=5432;dbname=mydb', 'user', 'pass');
     $stmt = $pdo->prepare("INSERT INTO users (name,email,password) VALUES (:name,:email,:password)");
@@ -73,12 +82,10 @@ if (empty($errors)) {
     $stmt->execute(['name' => $name, 'email' => $email, 'password' => $hash]);
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
     $stmt->execute(['email' => $email]);
+
     print_r ($stmt->fetch()) ;
     echo "вы успешно зарегистрированы";
 }else{
     require_once './get_registration.php';
 }
-
-
-
 ?>

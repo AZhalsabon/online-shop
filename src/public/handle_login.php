@@ -1,10 +1,8 @@
 <?php
-$login = $_POST['login'];
-$password_login = $_POST['password_login'];
-
-function ValidateLoginForm(array $arrpost)
+function validateLoginForm(array $arrpost): array
 {
     $errors = [];
+
     if (isset($arrpost['login'])){
         $login = $arrpost['login'];
 
@@ -14,15 +12,14 @@ function ValidateLoginForm(array $arrpost)
         }elseif (strlen($login) < 2){
             $errors['login'] = 'логин должен быть больше двух символов';
         }
-
     } else {
         $errors['login']='введите поле логина';
     }
 
     if (isset($arrpost['password_login'])){
-        $password_login = $arrpost['password_login'];
+        $passwordLogin = $arrpost['password_login'];
 
-        if (empty($password_login)){
+        if (empty($passwordLogin)){
             $errors['password_login'] = 'пароль не должен быть пустым';
         }
     }else {
@@ -32,21 +29,33 @@ function ValidateLoginForm(array $arrpost)
     return $errors;
 }
 
-$err = ValidateLoginForm($_POST);
+$err = validateLoginForm($_POST);
+
 if (empty($err)){
+    $login = $_POST['login'];
+    $passwordLogin = $_POST['password_login'];
+
     $pdo = new PDO('pgsql:host=postgres_db;port=5432;dbname=mydb', 'user', 'pass');
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
     $stmt->execute(['email' => $login]);
-    $userdata = $stmt->fetch();
-    if ($userdata === false){
-        $err['login'] = 'такого пользователя не существует';
+    $userData = $stmt->fetch();
+
+    if ($userData === false){
+        $err['login'] = 'неверный логин или пароль';
         require_once './get_login.php';
     } else {
-        if (password_verify($password_login, $userdata['password'])){
-            echo 'вы успешно верифицированы';
+        if (password_verify($passwordLogin, $userData['password'])){
+//            setcookie('user_id',$userData['id']);
+
+            session_start();
+            $_SESSION['user_id'] = $userData['id'];
+
+            header("location: /catalog");
+            exit;
+            //echo 'вы успешно верифицированы';
         } else {
-            $err['password_login'] = 'неверный пароль';
-            require_once './get_login.php';
+            $err['password_login'] = 'неверный логин или пароль';
+            require_once '/login';
         }
     }
 }else{
