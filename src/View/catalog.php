@@ -1,22 +1,3 @@
-<?php
-
-//if (!isset($_COOKIE['user_id'])){
-//    header("location: /get_login.php");
-//}
-session_start();
-if (!isset($_SESSION['user_id'])){
-    header("location: /login");
-}
-
-$pdo = new PDO('pgsql:host=postgres_db;port=5432;dbname=mydb', 'user', 'pass');
-$stmt = $pdo->prepare("SELECT * FROM products");
-$stmt->execute();
-
-$products = $stmt->fetchAll();
-
-//print_r($products);
-
-?>
 <div class="container">
     <h3>Каталог</h3>
     <div class="card-deck">
@@ -42,8 +23,6 @@ $products = $stmt->fetchAll();
     </div>
     <a href="/add-product">добавить товар в корзину</a>
     <a href="/logout">Выйти</a>
-
-
 </div>
 <style>
     body {

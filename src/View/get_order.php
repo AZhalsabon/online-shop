@@ -1,69 +1,78 @@
-
 <div class="container">
-  <div class="title">
-      <h2>Product Order Form</h2>
-  </div>
-<div class="d-flex">
-  <form action="/order" method="post" >
-    <label>
-      <span class="firstname">First Name <span class="required">*</span></span>
-      <input type="text" name="firstname">
-    </label>
-    <label>
-      <span class="lastname">Last Name <span class="required">*</span></span>
-      <input type="text" name="lastname">
-    </label>
-    <label>
-      <span>Country <span class="required">*</span></span>
-      <select name="country">
-        <option value="select">Select a country...</option>
+      <div class="title">
+          <h2>Product Order Form</h2>
 
-        <option value="RUS">Russian Federation</option>
-        <option value="USA">United States</option>
-        <option value="UMI">United States Minor Outlying Islands</option>
-
-      </select>
-    </label>
-    <label>
-      <span>адрес доставки <span class="required">*</span></span>
-      <input type="text" name="address" placeholder="округ/штат, город, улица, номер дома" required>
-    </label>
-
-      <span>Postcode / ZIP <span class="required">*</span></span>
-      <input type="text" name="postal_code">
-    </label>
-    <label>
-      <span>Phone <span class="required">*</span></span>
-      <input type="tel" name="number">
-    </label>
-    <label>
-      <span>Email Address <span class="required">*</span></span>
-      <input type="email" name="email_address">
-    </label>
-  </form>
-  <div class="Yorder">
-    <table>
-      <tr>
-        <th colspan="2">Your order</th>
-      </tr>
-      <tr>
-        <td>Product Name x 2(Qty)</td>
-        <td>$88.00</td>
-      </tr>
-      <tr>
-        <td>Subtotal</td>
-        <td>$88.00</td>
-      </tr>
-      <tr>
-        <td>Shipping</td>
-        <td>Free shipping</td>
-      </tr>
-    </table><br>
-    <button type="button">Place Order</button>
-  </div><!-- Yorder -->
- </div>
-    <?php print_r($errors)?>
 </div>
+<div class="d-flex">
+    <form action="/order" method="POST" >
+        <label>
+            <span class="firstname">First Name <span class="required">*</span></span>
+            <?php if(isset($errors['firstname'])) {print_r ($errors['firstname']);}?>
+
+            <input type="text" name="firstname" required>
+        </label>
+        <label>
+            <span class="lastname">Last Name <span class="required">*</span></span>
+            <?php if(isset($errors['lastname'])) {print_r ($errors['lastname']);}?>
+
+            <input type="text" name="lastname" required>
+        </label>
+        <label>
+            <span>Country <span class="required">*</span></span>
+            <select name="country" required>
+                <option value="">Select a country...</option>
+                <option value="RUS">Russian Federation</option>
+                <option value="USA">United States</option>
+                <option value="UMI">United States Minor Outlying Islands</option>
+            </select>
+        </label>
+        <label>
+            <span>адрес доставки <span class="required">*</span></span>
+            <?php if(isset($errors['address'])) {print_r ($errors['address']);}?>
+
+            <input type="text" name="address" placeholder="округ/штат, город, улица, номер дома" required>
+        </label>
+        <label>
+            <span>Postcode / ZIP <span class="required">*</span></span>
+            <?php if(isset($errors['postal_code'])) {print_r ($errors['postal_code']);}?>
+
+            <input type="text" name="postal_code" required>
+        </label>
+        <label>
+            <span>Phone <span class="required">*</span></span>
+            <?php if(isset($errors['number'])) {print_r ($errors['number']);}?>
+
+            <input type="tel" name="number" required>
+        </label>
+        <label>
+            <span>Email Address <span class="required">*</span></span>
+            <?php if(isset($errors['email_address'])) {print_r ($errors['email_address']);}?>
+
+            <input type="email" name="email_address" required>
+        </label>
+        <div class="Yorder">
+            <table>
+                <tr>
+                    <th colspan="2">Your order</th>
+                </tr>
+                <tr>
+                    <td>product quantity</td>
+                    <td><?php echo "{$totalProduct->getProductAmountById($userId)} шт";?></td>
+                </tr>
+                <tr>
+                    <td>Итого</td>
+                    <td><?php echo "{$totalProduct->sumPrice($userId)} руб";?></td>
+                </tr>
+                <tr>
+                    <td>Shipping</td>
+                    <td>Free shipping</td>
+                </tr>
+            </table><br>
+            <button type="submit" class="btn">Place Order</button>
+        </div><!-- Yorder -->
+    </form>
+</div>
+
 
 <style>
 @import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700');

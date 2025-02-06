@@ -1,39 +1,10 @@
-<?php
-session_start();
-
-if (!isset($_SESSION['user_id'])) {
-    header("location: /login");
-    exit;
-}
-
-$userId = $_SESSION['user_id'];
-
-$pdo = new PDO('pgsql:host=postgres_db;port=5432;dbname=mydb', 'user', 'pass');
-$stmt = $pdo->prepare("SELECT * FROM products");
-$stmt->execute();
-
-$userProducts = $stmt->fetchAll();
-
-function sumPrice($pdo,$userId)
-{
-    $stmt = $pdo->prepare("SELECT SUM(amount * price) AS total FROM user_products INNER JOIN products ON user_products.product_id = products.id WHERE user_products.user_id = :user_id");
-    $stmt->execute(['user_id' => $userId]);
-    $data = $stmt->fetch();
-    return $data['total'];
-}
-
-$totalPrice = sumPrice($pdo, $userId);
-
-//?>
 <div class="container">
     <h3>Корзина</h3>
     <div class="card-deck">
-        <?php foreach($userProducts as $product):?>
-        <?php
-            $kollStmt = $pdo->prepare("SELECT SUM(amount) AS total_amount FROM user_products WHERE user_id = :user_id AND product_id = :product_id");
-            $kollStmt->execute(['user_id' => $userId, 'product_id' => $product['id']]);
-            $koll = $kollStmt->fetchColumn() ?? 0;
-            if ($koll > 0):?>
+<!--        --><?php //print_r ($products);?>
+        <?php foreach($products as $product):?>
+        <?php $totalAmount = $totalProduct->getTotalAmountForUserProduct($product);
+        if ($totalAmount > 0):?>
         <div class="card text-center">
             <a href="#">
                 <div class="card-header">
@@ -45,8 +16,8 @@ $totalPrice = sumPrice($pdo, $userId);
 <!--                    <a href="#"><h5 class="card-title">--><?php //if(!empty($product['description'])) {echo ($product['description']);}?><!--</h5></a>-->
                     <div class="card-footer">
                         <?php
-                        $productPrice = $product['price'] * $koll;
-                        if(!empty($product['price'])) {echo "{$product['price']} руб * {$koll} шт = {$productPrice}";}
+                        $productPrice = $product['price'] * $totalProduct->getTotalAmountForUserProduct($product);
+                        if(!empty($product['price'])) {echo "{$product['price']} руб * {$totalProduct->getTotalAmountForUserProduct($product)} шт = {$productPrice}";}
                         ?>
                     </div>
                 </div>
@@ -54,9 +25,15 @@ $totalPrice = sumPrice($pdo, $userId);
         </div>
         <?php endif; ?>
         <?php endforeach; ?>
-        <p style="background-color: grey"><?php echo "Итого {$totalPrice} руб";?></p>
+        <p style="background-color: grey"><?php echo "Итого {$totalProduct->sumPrice($userId)} руб";?></p>
     </div>
-    <a href="/add-product">добавить товар в корзину</a>
+    <a href="/add-product">добавить товар в корзину </a>
+    <br>
+    <a href="/order">оформить заказ</a>
+    <br>
+    <a href="/my_orders">мои заказы</a>
+
+
 
 </div>
 <style>
